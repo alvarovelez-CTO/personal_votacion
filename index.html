@@ -1151,7 +1151,7 @@ footer p {
       logging: false 
     }).then(canvas => {
       const link = document.createElement('a');
-      link.download = `Certificado_Votacion_COPASST_${new Date().getTime()}.png`;
+      link.download = `Certificado_Comision_Personal_2026_${new Date().getTime()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     });
@@ -1171,7 +1171,7 @@ footer p {
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
       pdf.addImage(imgData, 'PNG', x, 15, imgWidth, imgHeight);
-      pdf.save(`Certificado_Votacion_COPASST_${new Date().getTime()}.pdf`);
+      pdf.save(`Certificado_Comision_Personal_2026_${new Date().getTime()}.pdf`);
     });
   };
 
