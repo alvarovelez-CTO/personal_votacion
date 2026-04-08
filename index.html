@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Elecciones Comisión de Personal 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <!-- Bootstrap 5.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <!-- Estilos institucionales -->
+  <style>
+    :root { --institucional: #0033a0; --secundario: #f5f7fa; }
+    body { background: linear-gradient(135deg, var(--institucional) 0%, var(--secundario) 100%); min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .inst-card { border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; background: white; }
+    .inst-button { background: var(--institucional); color: #fff; border: none; border-radius: 50px; padding: 15px 40px; font-weight: bold; }
+    .inst-button:hover { background: #002a8b; color: #fff; }
+    .candidato-card { background: white; border-radius: 15px; overflow: hidden; transition: all 0.3s ease; cursor: pointer; border: 3px solid transparent; margin-bottom: 20px; position: relative; }
+    .candidato-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    .candidato-card.selected { border-color: var(--institucional); box-shadow: 0 0 0 4px rgba(0, 51, 160, 0.2); }
+    .candidato-numero { position: absolute; top: 20px; right: 20px; width: 50px; height: 50px; background: #ff6b35; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.3rem; z-index: 10; box-shadow: 0 3px 10px rgba(255, 107, 53, 0.4); }
+    .certificado-container { background: white; border: 3px solid var(--institucional); border-radius: 15px; padding: 40px; margin-top: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
+    .certificado-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 10px; background: linear-gradient(90deg, var(--institucional), var(--secundario)); }
+    .codigo-verificacion { background: #f8f9fa; padding: 10px 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-weight: bold; letter-spacing: 2px; color: var(--institucional); display: inline-block; margin: 10px 0; }
+    .resultado-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; }
+    .resultado-card.ganador { background: linear-gradient(135deg, #fff3cd 0%, #fffbea 100%); border: 3px solid #ffc107; }
+    .barra-progreso { height: 40px; border-radius: 20px; background: #e9ecef; overflow: hidden; margin-top: 10px; }
+    .barra-fill { height: 100%; background: linear-gradient(90deg, #0033a0, #5c7dbf); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .cuenta-badge { background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 15px 25px; border-radius: 50px; display: inline-block; margin: 20px 0; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4); }
+    .stats-card { background: white; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .stats-number { font-size: 3rem; font-weight: bold; color: var(--institucional); line-height: 1; margin: 10px 0; }
+    .stats-label { color: #666; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+    .dashboard-header { background: white; color: var(--institucional); padding: 40px; border-radius: 15px; margin-bottom: 30px; text-align: center; border: 3px solid var(--institucional); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+    footer { 
+  text-align: center; 
+  padding: 30px 20px; 
+  background: linear-gradient(135deg, var(--institucional) 0%, #001f6b 100%);
+  color: #ffffff; 
+  font-size: 0.9rem; 
+  margin-top: 50px;
+  box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+  position: relative;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #ffc107, #ffffff);
+}
+
+footer p {
+  margin: 0;
+  font-weight: 500;
+}
+    
+    /* ESTILOS DEL TEMPORIZADOR */
+    .timer-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 20px; margin: 30px 0; box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4); }
+    .timer-display { display: flex; justify-content: center; gap: 20px; margin: 30px 0; flex-wrap: wrap; }
+    .timer-box { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; min-width: 100px; text-align: center; }
+    .timer-number { font-size: 3rem; font-weight: bold; line-height: 1; display: block; }
+    .timer-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-top: 5px; }
+    .status-badge { display: inline-block; padding: 10px 25px; border-radius: 50px; font-weight: bold; margin: 15px 0; font-size: 1.1rem; }
+    .status-waiting { background: #ffc107; color: #000; }
+    .status-open { background: #28a745; color: #fff; animation: pulse 2s infinite; }
+    .status-closed { background: #dc3545; color: #fff; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    
+    .datetime-picker { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0; }
+    .datetime-picker input { margin: 10px 0; padding: 10px; border-radius: 5px; border: 2px solid #ddd; width: 100%; }
+
+    /* FONDO DE TARJETÓN */
+.candidates-background { 
+  background-image: url('https://res.cloudinary.com/equinoxs-a-s/image/upload/v1765489907/Tarjet%C3%B3n_plantilla_aruxfe.png'); 
+  background-size: 100% 100%; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+  padding: 580px 20px 50px 20px !important; 
+  border-radius: 15px; 
+  margin: 20px 0;
+  min-height: 800px !important;
+}
+  </style>
+</head>
+<body>
+<div class="container my-5">
+  <div class="card inst-card">
+    <div class="card-body text-center p-5">
+      <img src="https://raw.githubusercontent.com/JDNG111/happy_day/refs/heads/main/alcaldialogo.jpg" alt="Logo" class="mb-3" width="220">
+      <h1 class="text-primary fw-bold">Elecciones COPASST 2025</h1>
+      <p class="text-muted">Comité Paritario de Seguridad y Salud en el Trabajo</p>
+
+      <!-- TEMPORIZADOR -->
+      <div id="timerBox" style="display:none"></div>
+
+      <!-- LOGIN -->
+      <div id="loginBox">
+        <button id="loginBtn" class="btn inst-button btn-lg">
+          <i class="bi bi-google"></i> Entrar con Google
+        </button>
+      </div>
+
+      <!-- NO HABILITADO -->
+      <div id="notAllowedBox" class="alert alert-warning mt-4" style="display:none">
+        Tu cuenta <strong id="rejectedEmail"></strong> <strong>no está habilitada</strong> para votar.
+        <br><br>
+        <button class="btn btn-sm btn-outline-warning" onclick="cerrarSesion()">Cerrar sesión</button>
+      </div>
+
+      <!-- YA VOTÓ -->
+      <div id="yaVotoBox" style="display:none">
+        <div class="alert alert-info">
+          <i class="bi bi-check-circle-fill fs-1"></i>
+          <h3 class="mt-3">¡Ya votaste!</h3>
+          <p class="mb-0">Tu voto fue registrado de forma segura.</p>
+        </div>
+        <div id="certificadoContainer"></div>
+      </div>
+
+      <!-- VOTAR -->
+      <div id="voteBox" style="display:none">
+        <div class="cuenta-badge">
+          <i class="bi bi-shield-check-fill"></i> Sesión Verificada
+          <br>
+          <strong id="userEmail"></strong>
+        </div>
+        <h3 class="text-primary mb-4">Selecciona tu candidato</h3>
+<div class="candidates-background">
+  <div id="candidates" class="row g-3"></div>
+</div>
+        <div class="text-center mt-4">
+          <button id="btnVotar" class="btn inst-button btn-lg" disabled>
+            <i class="bi bi-check-circle-fill"></i> Confirmar mi voto
+          </button>
+        </div>
+      </div>
+
+      <!-- RESULTADOS -->
+      <div id="resultBox" style="display:none">
+        <div class="dashboard-header">
+          <i class="bi bi-bar-chart-line-fill" style="font-size: 3rem;"></i>
+          <h1 style="font-size: 2.5rem; margin-top: 15px;">Resultado Oficial</h1>
+          <p style="color: #666;">Proceso Electoral Finalizado</p>
+        </div>
+        
+        <div class="row mb-4" id="statsContainer"></div>
+        
+        <div id="resultadosContainer"></div>
+        
+        <div id="ganadorContainer"></div>
+      </div>
+
+      <!-- ADMIN -->
+      <div id="adminBox" class="text-center mt-4" style="display:none">
+        <hr>
+        <div class="alert alert-warning">
+          <i class="bi bi-shield-lock-fill"></i> <strong>Panel de Administrador</strong>
+        </div>
+        
+        <!-- CONFIGURACIÓN DE HORARIOS -->
+        <div class="datetime-picker">
+          <h5><i class="bi bi-clock-fill"></i> Configurar Horario de Votación</h5>
+          <div class="row">
+            <div class="col-md-6">
+              <label><strong>Fecha y Hora de Inicio:</strong></label>
+              <input type="datetime-local" id="startDateTime" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label><strong>Fecha y Hora de Cierre:</strong></label>
+              <input type="datetime-local" id="endDateTime" class="form-control">
+            </div>
+          </div>
+          <button id="saveScheduleBtn" class="btn btn-primary mt-3">
+            <i class="bi bi-save-fill"></i> Guardar Horario
+          </button>
+        </div>
+        
+        <div class="btn-group mb-3 mt-3" role="group">
+          <button id="closeBtn" class="btn btn-danger btn-lg">
+            <i class="bi bi-lock-fill"></i> Cerrar votaciones
+          </button>
+          <button id="openBtn" class="btn btn-success btn-lg">
+            <i class="bi bi-unlock-fill"></i> Abrir votaciones
+          </button>
+        </div>
+        <br>
+        <button id="syncBtn" class="btn btn-info btn-lg mt-2 me-2">
+          <i class="bi bi-arrow-repeat"></i> Sincronizar Contadores
+        </button>
+        <button id="resetBtn" class="btn btn-warning btn-lg mt-2">
+          <i class="bi bi-arrow-clockwise"></i> Resetear todos los votos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p class="mb-0">© 2026 Desarrollado por el Grupo Administrativo - DADII</p>
+</footer>
+
+<!-- Firebase 12.6.0 modular -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, deleteDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBxr-CsMKtOi7PwSAl7en14KBcnhGT7W98",
+    authDomain: "votaciondepersonal.firebaseapp.com",
+    projectId: "votaciondepersonal",
+    storageBucket: "votaciondepersonal.firebasestorage.app",
+    messagingSenderId: "536597372988",
+    appId: "1:536597372988:web:29ac9cd73ea805c983e339"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  const electionId = 'eleccion2026';
+  const electionRef = doc(db, 'elections', electionId);
+
+  // ========== DATOS ESTÁTICOS ==========
+  const CANDIDATOS_ESTATICOS = {
+    'Candidato 1': {
+      nombre: 'JACQUELINE CRUZ ARTEAGA',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion1.jpg',
+      descripcion: 'Secretaría de Educación'
+    },
+    'Candidato 2': {
+      nombre: 'INGRID ROCIO TORRES ALVAREZ',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion2.jpg',
+      descripcion: 'Secretaría de Movilidad'
+    },
+    'Candidato 3': {
+      nombre: 'DIANA PATRICIA MONTES PEÑA',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion3.jpg',
+      descripcion: 'Secretaría de Educación'
+    },
+    'Candidato 4': {
+      nombre: 'JAIR CASTILLO SINISTERRA',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion4.jpg',
+      descripcion: 'Seguridad y Justicia'
+    },
+    'Candidato 5': {
+      nombre: 'JUAN CARLOS MONTES GUTIERREZ',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion5.png',
+      descripcion: 'Secretaría de Cultura'
+    },
+    'Candidato 6': {
+      nombre: 'PAULA MILENA LOPEZ PIERNAGORDA',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion6.jpg',
+      descripcion: 'Departamento Administrativo de Desarrollo e Innovación Institucional'
+    },
+    'Candidato 7': {
+      nombre: 'HECTOR MARIO VALENCIA ARBELAEZ',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion7.jpg',
+      descripcion: 'Secretaría de Movilidad'
+    },
+    'Candidato 8': {
+      nombre: 'YORLADY VALLEJO QUINTERO',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion8.png',
+      descripcion: 'Secretaría de Movilidad'
+    },
+    'Candidato 9': {
+      nombre: 'JOSE TRINIDAD DIAZ SEQUEDA',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion9.png',
+      descripcion: 'Secretaría de Salud'
+    },
+    'Candidato 10': {
+      nombre: 'VOTO EN BLANCO',
+      foto: 'https://raw.githubusercontent.com/JDNG111/votaciones-2025/refs/heads/main/posicion10.png',
+      descripcion: '',
+      ocultarNombre: true 
+    }
+  };
+
+  const FIRMAS_ESTATICAS = [
+    {
+      imagen: 'https://via.placeholder.com/200x80?text=Firma+1',
+      nombre: 'Karina Manzoni Flórez',
+      cargo: 'Subdirectora de Gestión Estratégica del Talento Humano'
+    },
+    {
+      imagen: 'https://via.placeholder.com/200x80?text=Firma+2',
+      nombre: 'Laura Patricia Álvarez Gómez',
+      cargo: 'Directora de Departamento Administrativo'
+    }
+  ];
+
+  let votoGuardado = null;
+  let voterData = null;
+  let timerInterval = null;
+  let electionInfo = null;
+  let electionListener = null;
+
+  // ========== FUNCIONES DEL TEMPORIZADOR ==========
+  function calculateTimeRemaining(targetDate) {
+    const now = new Date().getTime();
+    const target = new Date(targetDate).getTime();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
+    }
+
+    return {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+      seconds: Math.floor((diff % (1000 * 60)) / 1000),
+      expired: false
+    };
+  }
+
+  function updateTimerDisplay(info) {
+    const now = new Date().getTime();
+    const startTime = info.startTime ? new Date(info.startTime).getTime() : null;
+    const endTime = info.endTime ? new Date(info.endTime).getTime() : null;
+
+    let html = '<div class="timer-container">';
+
+    // Si no hay horarios configurados
+    if (!startTime || !endTime) {
+      html += `
+        <i class="bi bi-hourglass-split" style="font-size: 3rem;"></i>
+        <h3 class="mt-3">Horario de Votación No Configurado</h3>
+        <p>El administrador aún no ha establecido las fechas de votación.</p>
+      `;
+      html += '</div>';
+      document.getElementById('timerBox').innerHTML = html;
+      show('timerBox');
+      return 'not_configured';
+    }
+
+    // ANTES de empezar
+    if (now < startTime) {
+      const time = calculateTimeRemaining(info.startTime);
+      html += `
+        <i class="bi bi-hourglass-top" style="font-size: 3rem;"></i>
+        <h3 class="mt-3">Las Votaciones Comenzarán Pronto</h3>
+        <div class="status-badge status-waiting">
+          <i class="bi bi-clock-fill"></i> En Espera
+        </div>
+        <p>Inicio: <strong>${new Date(info.startTime).toLocaleString('es-CO')}</strong></p>
+        <div class="timer-display">
+          <div class="timer-box">
+            <span class="timer-number">${String(time.days).padStart(2, '0')}</span>
+            <span class="timer-label">Días</span>
+          </div>
+          <div class="timer-box">
+            <span class="timer-number">${String(time.hours).padStart(2, '0')}</span>
+            <span class="timer-label">Horas</span>
+          </div>
+          <div class="timer-box">
+            <span class="timer-number">${String(time.minutes).padStart(2, '0')}</span>
+            <span class="timer-label">Minutos</span>
+          </div>
+          <div class="timer-box">
+            <span class="timer-number">${String(time.seconds).padStart(2, '0')}</span>
+            <span class="timer-label">Segundos</span>
+          </div>
+        </div>
+      `;
+      html += '</div>';
+      document.getElementById('timerBox').innerHTML = html;
+      show('timerBox');
+      return 'before_start';
+    }
+
+    // DURANTE la votación
+    if (now >= startTime && now < endTime) {
+      const time = calculateTimeRemaining(info.endTime);
+      html += `
+        <i class="bi bi-check-circle-fill" style="font-size: 3rem;"></i>
+        <h3 class="mt-3">¡Votaciones Activas!</h3>
+        <div class="status-badge status-open">
+          <i class="bi bi-unlock-fill"></i> Abierto
+        </div>
+        <p>Cierre: <strong>${new Date(info.endTime).toLocaleString('es-CO')}</strong></p>
+        <div class="timer-display">
+          <div class="timer-box">
+            <span class="timer-number">${String(time.days).padStart(2, '0')}</span>
+            <span class="timer-label">Días</span>
+          </div>
+          <div class="timer-box">
+            <span class="timer-number">${String(time.hours).padStart(2, '0')}</span>
+            <span class="timer-label">Horas</span>
+          </div>
+          <div class="timer-box">
+            <span class="timer-number">${String(time.minutes).padStart(2, '0')}</span>
+            <span class="timer-label">Minutos</span>
+          </div>
+          <div class="timer-box">
+            <span class="timer-number">${String(time.seconds).padStart(2, '0')}</span>
+            <span class="timer-label">Segundos</span>
+          </div>
+        </div>
+      `;
+      html += '</div>';
+      document.getElementById('timerBox').innerHTML = html;
+      show('timerBox');
+      return 'active';
+    }
+
+    // DESPUÉS de cerrar
+    if (now >= endTime) {
+      html += `
+        <i class="bi bi-lock-fill" style="font-size: 3rem;"></i>
+        <h3 class="mt-3">Votaciones Finalizadas</h3>
+        <div class="status-badge status-closed">
+          <i class="bi bi-lock-fill"></i> Cerrado
+        </div>
+        <p>Las votaciones concluyeron el <strong>${new Date(info.endTime).toLocaleString('es-CO')}</strong></p>
+      `;
+      html += '</div>';
+      document.getElementById('timerBox').innerHTML = html;
+      show('timerBox');
+      return 'after_end';
+    }
+  }
+
+  function startTimer(info) {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    updateTimerDisplay(info);
+    
+    timerInterval = setInterval(() => {
+      updateTimerDisplay(info);
+    }, 1000);
+  }
+
+  // LISTENER EN TIEMPO REAL (NO CONSUME LECTURAS EXTRA)
+  function startElectionListener() {
+    if (electionListener) return; // Ya está escuchando
+    
+    electionListener = onSnapshot(electionRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const newInfo = snapshot.data();
+        const now = new Date().getTime();
+        const endTime = newInfo.endTime ? new Date(newInfo.endTime).getTime() : null;
+        const timeExpired = endTime && now >= endTime;
+        
+        // Si cambió el estado de open o si el tiempo expiró y ahora está cerrado
+        if (electionInfo) {
+          const wasOpen = electionInfo.open;
+          const isNowClosed = !newInfo.open;
+          
+          // Recargar si:
+          // 1. El estado de open cambió
+          // 2. O si el tiempo expiró Y ahora está cerrado (ambas condiciones)
+          if (wasOpen !== newInfo.open || (timeExpired && isNowClosed && wasOpen)) {
+            console.log('Estado de votación cambió, recargando...');
+            location.reload();
+            return;
+          }
+        }
+        
+        electionInfo = newInfo;
+        startTimer(newInfo);
+      }
+    }, (error) => {
+      console.error('Error en listener:', error);
+    });
+  }
+
+  function isVotingAllowed(info) {
+    if (!info.startTime || !info.endTime) return false;
+    
+    const now = new Date().getTime();
+    const startTime = new Date(info.startTime).getTime();
+    const endTime = new Date(info.endTime).getTime();
+    
+    return now >= startTime && now < endTime && info.open;
+  }
+
+  // ---------- LOGIN ----------
+  document.getElementById('loginBtn').onclick = () => signInWithPopup(auth, provider);
+
+  window.cerrarSesion = () => {
+    if (electionListener) electionListener(); // Detener listener
+    signOut(auth);
+    location.reload();
+  };
+
+  // ---------- AUTH STATE ----------
+  onAuthStateChanged(auth, async user => {
+    if (!user) { 
+      // Cargar temporizador e iniciar listener incluso sin login
+      try {
+        const snap = await getDoc(electionRef);
+        if (snap.exists()) {
+          electionInfo = snap.data();
+          startTimer(electionInfo);
+          startElectionListener(); // Iniciar listener en tiempo real
+        }
+      } catch (e) {
+        console.error('Error cargando info:', e);
+      }
+      show('loginBox'); 
+      return; 
+    }
+    
+    hide('loginBox');
+    document.getElementById('userEmail').textContent = user.email;
+
+    try {
+      // Leer información de la elección
+      const snap = await getDoc(electionRef);
+      if (!snap.exists()) {
+        if (user.email === 'alvaro.velez@cali.gov.co') {
+          await setDoc(electionRef, {
+            open: true,
+            adminUID: user.uid,
+            createdAt: new Date(),
+            totalVotos: 0,
+            startTime: null,
+            endTime: null,
+            resultados: Object.keys(CANDIDATOS_ESTATICOS).reduce((acc, id) => {
+              acc[id] = 0;
+              return acc;
+            }, {})
+          });
+          alert('Elección creada. Configura el horario de votación.');
+          location.reload();
+          return;
+        } else {
+          alert('La elección aún no ha sido creada.');
+          return;
+        }
+      }
+
+      const info = snap.data();
+      electionInfo = info;
+      
+      // Iniciar temporizador y listener
+      startTimer(info);
+      startElectionListener();
+
+      const candidatos = CANDIDATOS_ESTATICOS;
+      const isAdmin = user.email === 'alvaro.velez@cali.gov.co';
+
+      // Determinar el estado de la votación
+      const now = new Date().getTime();
+      const startTime = info.startTime ? new Date(info.startTime).getTime() : null;
+      const endTime = info.endTime ? new Date(info.endTime).getTime() : null;
+      
+      const timeExpired = endTime && now >= endTime;
+      const manualyClosed = !info.open;
+      
+      // SOLO mostrar resultados si AMBAS condiciones se cumplen:
+      // 1. El tiempo expiró según el reloj
+      // 2. El estado en Firebase es open: false
+      if (timeExpired && manualyClosed) {
+        await showResults(candidatos, info);
+        if (isAdmin) show('adminBox');
+        return;
+      }
+      
+      // Si está cerrado manualmente pero el tiempo NO ha expirado
+      if (!timeExpired && manualyClosed) {
+        hide('voteBox');
+        hide('yaVotoBox');
+        hide('notAllowedBox');
+        hide('resultBox');
+        
+        const alertHtml = `
+          <div class="alert alert-warning mt-4">
+            <i class="bi bi-lock-fill fs-1"></i>
+            <h3 class="mt-3">Votaciones Cerradas Anticipadamente</h3>
+            <p>Las votaciones han sido cerradas por el administrador.</p>
+            <p class="mb-0"><strong>Los resultados se publicarán cuando finalice el periodo electoral programado.</strong></p>
+            <p class="text-muted mt-2">Cierre programado: <strong>${new Date(info.endTime).toLocaleString('es-CO')}</strong></p>
+          </div>`;
+        
+        document.getElementById('timerBox').insertAdjacentHTML('afterend', alertHtml);
+        
+        if (isAdmin) {
+          show('adminBox');
+          const adminAlert = `
+            <div class="alert alert-info mt-3">
+              <i class="bi bi-info-circle-fill"></i>
+              <strong>Información:</strong> Los resultados se mostrarán automáticamente cuando expire el tiempo programado, o puedes cambiar la hora de cierre para que coincida con el momento actual.
+            </div>`;
+          document.getElementById('adminBox').insertAdjacentHTML('afterbegin', adminAlert);
+          
+          // Cargar horarios actuales
+          if (info.startTime) {
+            document.getElementById('startDateTime').value = new Date(info.startTime).toISOString().slice(0, 16);
+          }
+          if (info.endTime) {
+            document.getElementById('endDateTime').value = new Date(info.endTime).toISOString().slice(0, 16);
+          }
+        }
+        return;
+      }
+      
+      // Si el tiempo expiró pero open sigue en true, mostrar mensaje especial
+      if (timeExpired && !manualyClosed) {
+        hide('voteBox');
+        hide('yaVotoBox');
+        hide('notAllowedBox');
+        hide('resultBox');
+        
+        const alertHtml = `
+          <div class="alert alert-warning mt-4">
+            <i class="bi bi-hourglass-bottom fs-1"></i>
+            <h3 class="mt-3">Votación Finalizada por Tiempo</h3>
+            <p>El periodo de votación ha concluido.</p>
+            <p class="mb-0"><strong>Los resultados estarán disponibles una vez el administrador cierre oficialmente el proceso.</strong></p>
+          </div>`;
+        
+        document.getElementById('timerBox').insertAdjacentHTML('afterend', alertHtml);
+        
+        if (isAdmin) {
+          show('adminBox');
+          const adminAlert = `
+            <div class="alert alert-info mt-3">
+              <i class="bi bi-info-circle-fill"></i>
+              <strong>Acción requerida:</strong> Cierra manualmente las votaciones para publicar los resultados oficiales.
+            </div>`;
+          document.getElementById('adminBox').insertAdjacentHTML('afterbegin', adminAlert);
+          
+          // Cargar horarios actuales
+          if (info.startTime) {
+            document.getElementById('startDateTime').value = new Date(info.startTime).toISOString().slice(0, 16);
+          }
+          if (info.endTime) {
+            document.getElementById('endDateTime').value = new Date(info.endTime).toISOString().slice(0, 16);
+          }
+        }
+        return;
+      }
+      
+      const votingStatus = {
+        beforeStart: startTime && now < startTime,
+        active: isVotingAllowed(info),
+        afterEnd: timeExpired
+      };
+
+      // Si está ANTES de empezar, no mostrar nada más (solo temporizador)
+      if (votingStatus.beforeStart) {
+        if (isAdmin) {
+          show('adminBox');
+          // Cargar horarios actuales
+          if (info.startTime) {
+            document.getElementById('startDateTime').value = new Date(info.startTime).toISOString().slice(0, 16);
+          }
+          if (info.endTime) {
+            document.getElementById('endDateTime').value = new Date(info.endTime).toISOString().slice(0, 16);
+          }
+        }
+        return; // No continuar con el flujo de votación
+      }
+
+      // Verificar si está habilitado
+      const emailSanitized = user.email.replace(/[@.]/g, '_');
+      let voterSnap;
+      try {
+        voterSnap = await getDoc(doc(db, 'elections', electionId, 'voters', emailSanitized));
+      } catch (voterError) {
+        console.error('Error al verificar votante:', voterError);
+        show('notAllowedBox');
+        document.getElementById('rejectedEmail').textContent = user.email;
+        return;
+      }
+
+      if (!voterSnap.exists()) {
+        show('notAllowedBox');
+        document.getElementById('rejectedEmail').textContent = user.email;
+        return;
+      }
+      voterData = voterSnap.data();
+
+    // ¿Ya votó?
+      let votoSnap;
+      try {
+        votoSnap = await getDoc(doc(db, 'elections', electionId, 'votes', emailSanitized));
+      } catch (voteError) {
+        console.error('Error al verificar voto:', voteError);
+      }
+
+      if (votoSnap && votoSnap.exists()) {
+        votoGuardado = votoSnap.data();
+        await mostrarYaVoto(votoGuardado, user.email);
+        if (isAdmin) show('adminBox');
+        return;
+      }
+
+      // Mostrar candidatos
+      show('voteBox');
+      if (isAdmin) {
+        show('adminBox');
+        // Cargar horarios actuales
+        if (info.startTime) {
+          document.getElementById('startDateTime').value = new Date(info.startTime).toISOString().slice(0, 16);
+        }
+        if (info.endTime) {
+          document.getElementById('endDateTime').value = new Date(info.endTime).toISOString().slice(0, 16);
+        }
+      }
+      drawCandidates(candidatos);
+
+    } catch (error) {
+      console.error('Error en autenticación:', error);
+      alert('Error al cargar la aplicación: ' + error.message);
+    }
+  });
+
+  // ---------- GUARDAR HORARIO ----------
+  document.getElementById('saveScheduleBtn').onclick = async () => {
+    const startValue = document.getElementById('startDateTime').value;
+    const endValue = document.getElementById('endDateTime').value;
+
+    if (!startValue || !endValue) {
+      alert('Por favor ingresa ambas fechas');
+      return;
+    }
+
+    const startDate = new Date(startValue);
+    const endDate = new Date(endValue);
+
+    if (endDate <= startDate) {
+      alert('La fecha de cierre debe ser posterior a la de inicio');
+      return;
+    }
+
+    const btn = document.getElementById('saveScheduleBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+
+    try {
+      await updateDoc(electionRef, {
+        startTime: startDate.toISOString(),
+        endTime: endDate.toISOString()
+      });
+
+      alert('✅ Horario guardado exitosamente:\n\n' +
+            'Inicio: ' + startDate.toLocaleString('es-CO') + '\n' +
+            'Cierre: ' + endDate.toLocaleString('es-CO'));
+      location.reload();
+    } catch (e) {
+      alert('Error: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-save-fill"></i> Guardar Horario';
+    }
+  };
+
+  // ----------- CANDIDATOS -----------
+  function drawCandidates(candidatos) {
+  const box = document.getElementById('candidates');
+  box.innerHTML = '';
+  let candidatoNumero = 1;
+  Object.entries(candidatos).forEach(([id, candidato]) => {
+      const nombre = candidato.nombre || '';
+      const foto = candidato.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&size=250&background=667eea&color=fff`;
+      const descripcion = candidato.descripcion || '';
+      
+      const col = document.createElement('div');
+      col.className = 'col-md-4';
+ col.innerHTML =
+  `<div class="candidato-card" data-id="${id}" data-name="${nombre}">
+     <div class="candidato-numero">${candidatoNumero}</div>
+     <img src="${foto}" class="img-fluid" style="height:300px;object-fit:cover;width:100%;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&size=250&background=667eea&color=fff'">
+           <div class="p-3 text-center">
+             ${!candidato.ocultarNombre ? `<h5 class="fw-bold mb-1" style="color: #0033a0;">${nombre}</h5>` : ''}
+             ${descripcion ? `<p class="small mb-0" style="color: #0033a0;">${descripcion}</p>` : ''}
+           </div>
+         </div>`;
+      box.appendChild(col);
+      
+      col.querySelector('.candidato-card').addEventListener('click', function() {
+        selectCandidate(this);
+      });
+    candidatoNumero++;
+    });
+  }
+
+  let selectedId = null, selectedName = null;
+  function selectCandidate(card) {
+    document.querySelectorAll('.candidato-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedId = card.dataset.id;
+    selectedName = card.dataset.name;
+    document.getElementById('btnVotar').disabled = false;
+  }
+
+  // ----------- VOTAR -----------
+  document.getElementById('btnVotar').onclick = async () => {
+    if (!selectedId) return;
+    
+    // Verificar horario antes de votar
+    if (!isVotingAllowed(electionInfo)) {
+      alert('⚠️ El horario de votación ha finalizado o aún no ha comenzado.');
+      location.reload();
+      return;
+    }
+    
+    if (!confirm(`¿Confirmas tu voto por ${selectedName}?\n\nEsta acción NO se puede deshacer.`)) return;
+
+    const user = auth.currentUser;
+    const emailSanitized = user.email.replace(/[@.]/g, '_');
+    const ahora = new Date();
+    
+    const fecha = ahora.toLocaleDateString('es-CO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }) + ' ' + ahora.toLocaleTimeString('es-CO', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+    
+    const codigo = Math.random().toString(36).slice(-8).toUpperCase() + Math.random().toString(36).slice(-4).toUpperCase();
+
+    const btn = document.getElementById('btnVotar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Registrando...';
+
+    try {
+      const votoData = {
+        Email: user.email,
+        Candidato: selectedId,
+        Candidato_Nombre: selectedName,
+        Fecha: fecha,
+        Codigo_Verificacion: codigo
+      };
+
+      await setDoc(doc(db, 'elections', electionId, 'votes', emailSanitized), votoData);
+
+      try {
+        await updateDoc(electionRef, {
+          totalVotos: increment(1),
+          [`resultados.${selectedId}`]: increment(1)
+        });
+      } catch (counterError) {
+        console.error('Error al actualizar contadores:', counterError);
+        alert('⚠️ Tu voto fue registrado, pero hubo un problema actualizando los contadores.');
+      }
+
+      votoGuardado = votoData;
+      await mostrarYaVoto(votoData, user.email);
+
+    } catch (error) {
+      console.error('Error al votar:', error);
+      alert('Error al registrar el voto: ' + error.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Confirmar mi voto';
+    }
+  };
+
+  // ----------- MOSTRAR "YA VOTÓ" -----------
+  async function mostrarYaVoto(voto, email) {
+    hide('voteBox'); 
+    hide('loginBox'); 
+    hide('notAllowedBox');
+    hide('resultBox');
+    show('yaVotoBox');
+
+    const emailMostrar = voto.Email || voto.email || email;
+    const fecha = voto.Fecha || voto.fecha || 'No disponible';
+    const codigo = voto.Codigo_Verificacion || voto.codigoVerificacion || 'No disponible';
+    const nombre = voterData?.nombre || 'No disponible';
+    const cedula = voterData?.cedula || 'No disponible';
+
+    const html = `
+      <div class="certificado-container" id="certificado">
+        <div class="text-center mb-4">
+          <img src="https://raw.githubusercontent.com/JDNG111/happy_day/refs/heads/main/alcaldialogo.jpg" width="100">
+          <h3 class="text-primary fw-bold mt-2">CERTIFICADO DE VOTACIÓN</h3>
+          <p style="color: #666;">Elecciones COPASST 2025</p>
+        </div>
+        <div class="text-center">
+          <p>Se certifica que:</p>
+          <h4 class="text-primary fw-bold">${nombre}</h4>
+          <p><strong>Cédula:</strong> ${cedula}</p>
+          <p><strong>Correo:</strong> ${emailMostrar}</p>
+          <p>Ha ejercido su derecho al voto</p>
+          <p><strong>Fecha:</strong> ${fecha}</p>
+          <div style="margin-top: 30px;">
+            <p><strong>Código de verificación:</strong></p>
+            <div class="codigo-verificacion">${codigo}</div>
+          </div>
+          <p class="mt-4 mb-0" style="font-size:0.85rem;color:#666;">
+          </p>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <button onclick="descargarPNG()" class="btn inst-button btn-lg me-2">
+          <i class="bi bi-image"></i> Descargar PNG
+        </button>
+        <button onclick="descargarPDF()" class="btn inst-button btn-lg">
+          <i class="bi bi-file-pdf"></i> Descargar PDF
+        </button>
+      </div>
+      <div class="text-center mt-3">
+        <button onclick="cerrarSesionYMostrarMensaje()" class="btn btn-outline-secondary">
+          <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        </button>
+      </div>`;
+    
+    document.getElementById('certificadoContainer').innerHTML = html;
+  }
+
+  // ----------- SINCRONIZAR CONTADORES -----------
+  document.getElementById('syncBtn').onclick = async () => {
+    if (!confirm('¿Sincronizar contadores con los votos actuales?')) return;
+    
+    const btn = document.getElementById('syncBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sincronizando...';
+    
+    try {
+      const votesSnap = await getDocs(collection(db, 'elections', electionId, 'votes'));
+      const contadores = {};
+      
+      Object.keys(CANDIDATOS_ESTATICOS).forEach(id => {
+        contadores[id] = 0;
+      });
+      
+      votesSnap.forEach(doc => {
+        const candidato = doc.data().Candidato;
+        if (contadores[candidato] !== undefined) {
+          contadores[candidato]++;
+        }
+      });
+      
+      await updateDoc(electionRef, {
+        totalVotos: votesSnap.size,
+        resultados: contadores
+      });
+      
+      alert(`✅ Sincronización exitosa:\n\nTotal votos: ${votesSnap.size}\n${Object.entries(contadores).map(([k,v]) => `${k}: ${v}`).join('\n')}`);
+      location.reload();
+    } catch (e) {
+      alert('Error al sincronizar: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Sincronizar Contadores';
+    }
+  };
+
+// ----------- CERRAR VOTACIONES -----------
+  document.getElementById('closeBtn').onclick = async () => {
+    if (!confirm('¿Cerrar las votaciones manualmente?')) return;
+    
+    const btn = document.getElementById('closeBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Cerrando...';
+    
+    try {
+      // Detener el listener para evitar recarga prematura
+      if (electionListener) {
+        electionListener();
+        electionListener = null;
+      }
+      
+      await updateDoc(electionRef, { open: false });
+      alert('✅ Votaciones cerradas exitosamente. Recargando...');
+      
+      // Esperar un momento antes de recargar
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    } catch (e) {
+      alert('Error: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-lock-fill"></i> Cerrar votaciones';
+      // Reiniciar listener si hubo error
+      startElectionListener();
+    }
+  };
+
+// ----------- ABRIR VOTACIONES -----------
+  document.getElementById('openBtn').onclick = async () => {
+    if (!confirm('¿Abrir las votaciones manualmente?')) return;
+    
+    const btn = document.getElementById('openBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Abriendo...';
+    
+    try {
+      // Detener el listener para evitar recarga prematura
+      if (electionListener) {
+        electionListener();
+        electionListener = null;
+      }
+      
+      await updateDoc(electionRef, { open: true });
+      alert('✅ Votaciones abiertas exitosamente. Recargando...');
+      
+      // Esperar un momento antes de recargar
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    } catch (e) {
+      alert('Error: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-unlock-fill"></i> Abrir votaciones';
+      // Reiniciar listener si hubo error
+      startElectionListener();
+    }
+  };
+
+  // ----------- RESETEAR VOTOS -----------
+  document.getElementById('resetBtn').onclick = async () => {
+    const confirmacion = prompt('⚠️ ADVERTENCIA: Esto eliminará TODOS los votos.\n\nEscribe "RESETEAR" para confirmar:');
+    if (confirmacion !== 'RESETEAR') {
+      alert('Operación cancelada');
+      return;
+    }
+    
+    const btn = document.getElementById('resetBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Eliminando votos...';
+    
+    try {
+      const votesSnap = await getDocs(collection(db, 'elections', electionId, 'votes'));
+      let deleteCount = 0;
+      
+      for (const votoDoc of votesSnap.docs) {
+        await deleteDoc(votoDoc.ref);
+        deleteCount++;
+      }
+
+      await updateDoc(electionRef, {
+        totalVotos: 0,
+        resultados: Object.keys(CANDIDATOS_ESTATICOS).reduce((acc, id) => {
+          acc[id] = 0;
+          return acc;
+        }, {})
+      });
+      
+      alert(`✅ Se eliminaron ${deleteCount} votos exitosamente. Recargando...`);
+      location.reload();
+    } catch (e) {
+      alert('Error al resetear votos: ' + e.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Resetear todos los votos';
+    }
+  };
+
+  // ----------- MOSTRAR RESULTADOS -----------
+  async function showResults(candidatos, info) {
+    hide('voteBox'); 
+    hide('adminBox'); 
+    hide('loginBox'); 
+    hide('notAllowedBox'); 
+    hide('yaVotoBox');
+    show('resultBox');
+
+    try {
+      const totalVotos = info.totalVotos || 0;
+      const resultados = info.resultados || {};
+      const votantesHabilitados = 9655;
+
+      const sorted = Object.entries(candidatos)
+        .map(([id, candidato]) => ({
+          candidato: id,
+          nombre: candidato.nombre || 'Voto en Blanco',
+          foto: candidato.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(candidato.nombre || 'Usuario')}&size=250&background=667eea&color=fff`,
+          descripcion: candidato.descripcion || '',
+          votos: resultados[id] || 0,
+          porcentaje: totalVotos > 0 ? (((resultados[id] || 0) / totalVotos) * 100).toFixed(1) : 0
+        }))
+        .sort((a, b) => b.votos - a.votos);
+
+      let statsHtml = `
+        <div class="col-md-4 mb-3">
+          <div class="stats-card">
+            <i class="bi bi-people-fill" style="font-size: 2rem; color: var(--institucional);"></i>
+            <div class="stats-number">${totalVotos}</div>
+            <div class="stats-label">Total Votos</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="stats-card">
+            <i class="bi bi-person-check-fill" style="font-size: 2rem; color: var(--institucional);"></i>
+            <div class="stats-number">${sorted.length}</div>
+            <div class="stats-label">Candidatos</div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="stats-card">
+            <i class="bi bi-person-badge-fill" style="font-size: 2rem; color: var(--institucional);"></i>
+            <div class="stats-number">${votantesHabilitados}</div>
+            <div class="stats-label">Votantes Habilitados</div>
+          </div>
+        </div>`;
+      
+      document.getElementById('statsContainer').innerHTML = statsHtml;
+
+      let html = '<div class="card" style="padding: 40px;">' +
+        '<h3 class="text-center mb-4" style="color: var(--institucional);"><i class="bi bi-list-ol"></i> Resultados Detallados</h3>';
+
+      sorted.forEach((r, i) => {
+        html += `<div class="resultado-card${i < 4 ? ' ganador' : ''}">
+          <div class="d-flex align-items-center mb-3">
+            <img src="${r.foto}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 3px solid var(--institucional); object-fit: cover;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(r.nombre)}&size=80&background=667eea&color=fff'">
+            <div class="flex-grow-1">
+              <h4 class="mb-0 text-primary">${r.nombre}</h4>
+              <div class="text-muted">${r.votos} votos</div>
+            </div>
+            <div style="font-size: 2rem; font-weight: bold; color: var(--institucional);">${r.porcentaje}%</div>
+          </div>
+          <div class="barra-progreso">
+            <div class="barra-fill" style="width: ${r.porcentaje}%">${r.porcentaje}%</div>
+          </div>
+        </div>`;
+      });
+
+      html += '</div>';
+      document.getElementById('resultadosContainer').innerHTML = html;
+
+      let firmasHtml = `
+        <div class="card mt-4" style="padding: 40px;">
+          <h4 class="text-center mb-4" style="color: var(--institucional);">Organizadores del Proceso Electoral</h4>
+          <div class="row">`;
+      
+      FIRMAS_ESTATICAS.forEach(firma => {
+        firmasHtml += `
+          <div class="col-md-6 text-center mb-4">
+            <img src="${firma.imagen}" alt="Firma" style="max-width: 200px; margin-bottom: 15px;">
+            <h5 class="mb-1" style="color: var(--institucional);">${firma.nombre}</h5>
+            <p class="mb-1"><strong>${firma.cargo}</strong></p>
+            <p class="text-muted small mb-0">Departamento Administrativo de Desarrollo e Innovación Institucional</p>
+          </div>`;
+      });
+      
+      firmasHtml += '</div></div>';
+      document.getElementById('ganadorContainer').innerHTML = firmasHtml;
+
+    } catch (error) {
+      console.error('Error al cargar resultados:', error);
+      document.getElementById('resultadosContainer').innerHTML = 
+        '<div class="alert alert-danger">Error al cargar resultados: ' + error.message + '</div>';
+    }
+  }
+
+  // ----------- DESCARGAS -----------
+  window.descargarPNG = function() {
+    const cert = document.getElementById('certificado');
+    html2canvas(cert, { 
+      scale: 2, 
+      backgroundColor: '#ffffff',
+      logging: false 
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `Certificado_Votacion_COPASST_${new Date().getTime()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  };
+
+  window.descargarPDF = function() {
+    const cert = document.getElementById('certificado');
+    html2canvas(cert, { 
+      scale: 2, 
+      backgroundColor: '#ffffff',
+      logging: false 
+    }).then(canvas => {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 180;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
+      pdf.addImage(imgData, 'PNG', x, 15, imgWidth, imgHeight);
+      pdf.save(`Certificado_Votacion_COPASST_${new Date().getTime()}.pdf`);
+    });
+  };
+
+  window.cerrarSesionYMostrarMensaje = async function() {
+    if (confirm('¿Deseas cerrar sesión?')) {
+      await signOut(auth);
+      hide('yaVotoBox');
+      show('loginBox');
+      alert('✅ Sesión cerrada exitosamente.');
+    }
+  };
+
+  // ----------- HELPERS -----------
+  function show(id) { 
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block'; 
+  }
+  
+  function hide(id) { 
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none'; 
+  }
+</script>
+
+<!-- Librerías auxiliares -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
