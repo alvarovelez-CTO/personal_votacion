@@ -73,8 +73,8 @@ footer p {
 
     /* FONDO DE TARJETÓN */
 .candidates-background { 
-  background-image: url('https://raw.githubusercontent.com/alvarovelez-CTO/personal_votacion/refs/heads/main/Candidatos-horizontal.jpg'); 
-  background-size: 100% 100%; 
+  background-image: url('https://raw.githubusercontent.com/alvarovelez-CTO/personal_votacion/refs/heads/main/Candidatos-vertical.jpg'); 
+  background-size: 100% auto; 
   background-position: center; 
   background-repeat: no-repeat; 
   padding: 580px 20px 50px 20px !important; 
@@ -765,7 +765,7 @@ footer p {
  col.innerHTML =
   `<div class="candidato-card" data-id="${id}" data-name="${nombre}">
      <div class="candidato-numero">${candidatoNumero}</div>
-     <img src="${foto}" class="img-fluid" style="height:300px;object-fit:cover;width:100%;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&size=250&background=667eea&color=fff'">
+     <img src="${foto}" class="img-fluid" style="height:180px; object-fit:cover; width:100%;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&size=250&background=667eea&color=fff'">
            <div class="p-3 text-center">
              ${!candidato.ocultarNombre ? `<h5 class="fw-bold mb-1" style="color: #0033a0;">${nombre}</h5>` : ''}
              ${descripcion ? `<p class="small mb-0" style="color: #0033a0;">${descripcion}</p>` : ''}
