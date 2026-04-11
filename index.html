@@ -1099,7 +1099,7 @@ footer p {
         '<h3 class="text-center mb-4" style="color: var(--institucional);"><i class="bi bi-list-ol"></i> Resultados Detallados</h3>';
 
       sorted.forEach((r, i) => {
-        html += `<div class="resultado-card${i < 4 ? ' ganador' : ''}">
+        html += `<div class="resultado-card${i < 2 ? ' ganador' : ''}">
           <div class="d-flex align-items-center mb-3">
             <img src="${r.foto}" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px; border: 3px solid var(--institucional); object-fit: cover;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(r.nombre)}&size=80&background=667eea&color=fff'">
             <div class="flex-grow-1">
