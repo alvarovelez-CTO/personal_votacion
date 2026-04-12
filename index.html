@@ -82,6 +82,93 @@ footer p {
   margin: 20px 0;
   min-height: 1000px !important;
 }
+
+    @media (max-width: 768px) {
+  .candidates-background {
+    background-image: url('https://res.cloudinary.com/elmomaso/image/upload/q_auto/f_auto/v1776012294/corregido_tarjeton_pf57z3.jpg') !important;
+    background-size: 100% 100% !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    padding: 180px 15px 150px 15px !important; /* ← ajusta estos valores */
+    min-height: 600px !important;              /* ← y este */
+  }
+
+  .candidato-card {
+    max-width: 100% !important;
+  }
+}
+    
+    @media (max-width: 768px) {
+  /* Texto del título más pequeño */
+  h1.fw-bold {
+    font-size: 1.5rem !important;
+  }
+
+  /* Padding de la tarjeta principal */
+  .card-body.p-5 {
+    padding: 1.5rem !important;
+  }
+
+  /* Timer más compacto */
+  .timer-number {
+    font-size: 2rem !important;
+  }
+
+  .timer-box {
+    min-width: 70px !important;
+    padding: 12px !important;
+  }
+
+  .timer-container {
+    padding: 20px !important;
+  }
+
+  /* Botones más compactos */
+  .inst-button {
+    padding: 12px 24px !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Panel admin — botones en columna */
+  .btn-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .btn-group .btn {
+    border-radius: 8px !important;
+  }
+
+  /* Stats cards en móvil */
+  .stats-number {
+    font-size: 2rem !important;
+  }
+
+  /* Resultados — foto más pequeña */
+  .resultado-card img {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  /* Candidatos — 1 columna en móvil */
+  #candidates .col-md-4 {
+    width: 100% !important;
+  }
+}
+
+/* Tablet — 2 columnas */
+@media (min-width: 769px) and (max-width: 1024px) {
+  #candidates .col-md-4 {
+    width: 50% !important;
+  }
+
+  .candidates-background {
+    background-image: none !important;
+    padding: 10px !important;
+    min-height: auto !important;
+  }
+}
   </style>
 </head>
 <body>
