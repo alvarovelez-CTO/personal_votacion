@@ -77,12 +77,12 @@ footer p {
   background-size: 100% 100%; 
   background-position: center; 
   background-repeat: no-repeat; 
-  padding: 335px 100px 330px 150px !important; 
+  padding: 555px 100px 415px 250px !important; 
   border-radius: 15px; 
   margin: 20px 0;
   min-height: 1000px !important;
 }
-      #candidates .col-md-4 {
+      #candidates .col-md-6 {
     width: 50% !important;
   }
 
@@ -851,7 +851,7 @@ footer p {
       const descripcion = candidato.descripcion || '';
       
       const col = document.createElement('div');
-      col.className = 'col-md-4';
+      col.className = 'col-md-6';
  col.innerHTML =
   `<div class="candidato-card" data-id="${id}" data-name="${nombre}">
      <div class="candidato-numero">${candidatoNumero}</div>
