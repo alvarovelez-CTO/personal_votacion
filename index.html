@@ -371,12 +371,10 @@ footer p {
 
   const FIRMAS_ESTATICAS = [
     {
-      imagen: 'https://via.placeholder.com/200x80?text=Firma+1',
       nombre: 'Karina Manzoni Flórez',
       cargo: 'Subdirectora de Gestión Estratégica del Talento Humano'
     },
     {
-      imagen: 'https://via.placeholder.com/200x80?text=Firma+2',
       nombre: 'Laura Patricia Álvarez Gómez',
       cargo: 'Directora de Departamento Administrativo'
     }
@@ -1212,15 +1210,20 @@ footer p {
           <h4 class="text-center mb-4" style="color: var(--institucional);">Organizadores del Proceso Electoral</h4>
           <div class="row">`;
       
-      FIRMAS_ESTATICAS.forEach(firma => {
-        firmasHtml += `
-          <div class="col-md-6 text-center mb-4">
-            <img src="${firma.imagen}" alt="Firma Electronicamente" style="max-width: 200px; margin-bottom: 15px;">
-            <h5 class="mb-1" style="color: var(--institucional);">${firma.nombre}</h5>
-            <p class="mb-1"><strong>${firma.cargo}</strong></p>
-            <p class="text-muted small mb-0">Departamento Administrativo de Desarrollo e Innovación Institucional</p>
-          </div>`;
-      });
+FIRMAS_ESTATICAS.forEach(firma => {
+  firmasHtml += `
+    <div class="col-md-6 text-center mb-4">
+      <div style="
+        margin-bottom: 15px;
+        color: var(--institucional);
+        font-style: italic;
+        font-weight: 500;
+      ">Firmado Electrónicamente</div>
+      <h5 class="mb-1" style="color: var(--institucional);">${firma.nombre}</h5>
+      <p class="mb-1"><strong>${firma.cargo}</strong></p>
+      <p class="text-muted small mb-0">Departamento Administrativo de Desarrollo e Innovación Institucional</p>
+    </div>`;
+});
       
       firmasHtml += '</div></div>';
       document.getElementById('ganadorContainer').innerHTML = firmasHtml;
